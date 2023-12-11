@@ -1,7 +1,10 @@
 import datetime
 
+from django.contrib.auth import get_user_model
 from django.db import models
-from django.core.validators import MaxValueValidator
+from django.core.validators import MaxValueValidator, MinValueValidator
+
+User = get_user_model()
 
 
 class Category(models.Model):
@@ -67,3 +70,76 @@ class Title(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Reviews(models.Model):
+    title = models.ForeignKey(
+        Title,
+        on_delete=models.CASCADE,
+        related_name='reviews',
+    )
+    text = models.TextField
+    author = models.ForeignKey(
+        User,
+        verbose_name='Автор',
+        on_delete=models.CASCADE,
+        related_name='reviews',
+    )
+    score = models.PositiveSmallIntegerField(
+        verbose_name='Оценка произведению',
+        validators=[
+            MaxValueValidator(
+                limit_value=10,
+                message='Оценка не может превышать 10.',
+            ),
+            MinValueValidator(
+                limit_value=0,
+                message='Оценка не может быть меньше 0.',
+            )
+        ]
+    )
+    pub_date = models.DateTimeField(
+        verbose_name='Дата публикации',
+        auto_now_add=True,
+    )
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['author', 'title'],
+                name='unique_author_title',
+            )
+        ]
+        verbose_name = 'отзыв'
+        verbose_name_plural = 'Отзывы'
+        ordering = ('-pub_date',)
+
+    def __str__(self):
+        return self.text
+
+
+class Comment(models.Model):
+    review = models.ForeignKey(
+        Reviews,
+        on_delete=models.CASCADE,
+        related_name='comments',
+        verbose_name='Отзыв',
+    )
+    text = models.CharField(verbose_name='Текст комментария')
+    author = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='comments',
+        verbose_name='Автор'
+    )
+    pub_date = models.DateTimeField(
+        verbose_name='Дата публикации',
+        auto_now_add=True,
+    )
+
+    class Meta:
+        verbose_name = 'комментарий'
+        verbose_name_plural = 'Комментарии'
+
+    def __str__(self):
+        return self.text
