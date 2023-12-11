@@ -13,9 +13,6 @@ router_review_v1 = routers.DefaultRouter()
 router_review_v1.register(r'categories', CategoryViewSet)
 router_review_v1.register(r'genres', GenreViewSet)
 
-
 urlpatterns = [
-    path('v1/', include([
-        path('', include(router_review_v1.urls)),
-    ]))
+    path('v1/', include(router_review_v1.urls)),
 ]

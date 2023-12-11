@@ -16,7 +16,7 @@ class CategoryViewSet(mixins.CreateModelMixin,
                       mixins.ListModelMixin,
                       mixins.DestroyModelMixin,
                       GenericViewSet):
-    """Вывод категирий произведений."""
+    """Вывод категорий произведений."""
 
     # permission_classes =
     queryset = Category.objects.all()
