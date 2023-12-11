@@ -21,6 +21,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'users',
     'reviews',
     'api',
 ]
@@ -36,6 +38,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'api_yamdb.urls'
+AUTH_USER_MODEL = 'users.CustomUser'
 
 TEMPLATES_DIR = BASE_DIR / 'templates'
 TEMPLATES = [
