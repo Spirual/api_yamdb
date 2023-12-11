@@ -7,6 +7,7 @@ from .views import (
     GenreViewSet,
 )
 
+
 app_name = 'api'
 
 router_review_v1 = routers.DefaultRouter()
