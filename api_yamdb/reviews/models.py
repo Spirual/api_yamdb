@@ -57,7 +57,6 @@ class Title(models.Model):
         Category,
         on_delete=models.SET_NULL,
         null=True,
-        blank=True,
         verbose_name='Категория',
     )
 
