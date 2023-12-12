@@ -1,21 +1,21 @@
-from rest_framework import filters, mixins
-from rest_framework.viewsets import GenericViewSet
+from rest_framework import filters, viewsets
 from rest_framework.pagination import LimitOffsetPagination
 
+from .mixins import CreateDestiyListModelMixin
 from reviews.models import (
     Category,
     Genre,
+    Title,
 )
 from .serializers import (
     CategorySerializer,
     GenreSerializer,
+    TitleWriteSerializer,
+    TitleReadSerializer,
 )
 
 
-class CategoryViewSet(mixins.CreateModelMixin,
-                      mixins.ListModelMixin,
-                      mixins.DestroyModelMixin,
-                      GenericViewSet):
+class CategoryViewSet(CreateDestiyListModelMixin):
     """Вывод категорий произведений."""
 
     # permission_classes =
@@ -27,10 +27,7 @@ class CategoryViewSet(mixins.CreateModelMixin,
     lookup_field = 'slug'
 
 
-class GenreViewSet(mixins.CreateModelMixin,
-                   mixins.ListModelMixin,
-                   mixins.DestroyModelMixin,
-                   GenericViewSet):
+class GenreViewSet(CreateDestiyListModelMixin):
     """Вывод жанров произведений."""
 
     # permission_classes =
@@ -40,3 +37,20 @@ class GenreViewSet(mixins.CreateModelMixin,
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name',)
     lookup_field = 'slug'
+
+
+class TitleViewSet(viewsets.ModelViewSet):
+    """Вывод произведений."""
+
+    # permission_classes =
+    queryset = Title.objects.all()
+    pagination_class = LimitOffsetPagination
+    filter_backends = (filters.SearchFilter,)
+    search_fields = (
+        'name', 'year', 'category__slug', 'genre__slug'
+    )
+
+    def get_serializer_class(self):
+        if self.action in ['create', 'update', 'partial_update']:
+            return TitleWriteSerializer
+        return TitleReadSerializer
