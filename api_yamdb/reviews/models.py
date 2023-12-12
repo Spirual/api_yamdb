@@ -122,7 +122,7 @@ class Review(models.Model):
 
 class Comment(models.Model):
     review = models.ForeignKey(
-        Reviews,
+        Review,
         on_delete=models.CASCADE,
         related_name='comments',
         verbose_name='Отзыв',
