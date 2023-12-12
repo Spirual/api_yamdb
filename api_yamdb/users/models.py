@@ -24,7 +24,7 @@ class CustomUser(AbstractUser):
     )
 
     username = models.CharField(
-        verbose_name='Юзернейм',
+        verbose_name='Имя пользователя',
         max_length=150,
         unique=True,
         help_text=('Поле обязательное. Максимум 150 символов. '
@@ -48,6 +48,11 @@ class CustomUser(AbstractUser):
         max_length=16,
         choices=ROLE_CHOICES,
         default=USER
+    )
+    confirmation_code = models.CharField(
+        max_length=32,
+        blank=True,
+        verbose_name='Код подтверждения',
     )
 
     class Meta:

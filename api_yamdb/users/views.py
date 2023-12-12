@@ -1,8 +1,11 @@
 from django.contrib.auth import get_user_model
+
+from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status
-from .serializers import SignupSerializer
+from rest_framework_simplejwt.views import TokenObtainPairView
+
+from .serializers import SignupSerializer, GetTokenSerializer
 from .utils import send_confirmation_code_to_email
 
 User = get_user_model()
@@ -17,14 +20,19 @@ class SignupView(APIView):
     """
     def post(self, request):
         serializer = SignupSerializer(data=request.data)
-        email = request.data.get('email')
         if User.objects.filter(username=request.data.get('username'),
-                               email=email).exists():
-            send_confirmation_code_to_email(email)
-            return Response('Код подтверждения отправлен',
+                               email=request.data.get('email')
+                               ).exists():
+            send_confirmation_code_to_email(request)
+            return Response(request.data,
                             status=status.HTTP_200_OK)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        email = serializer.validated_data.get('email')
-        send_confirmation_code_to_email(email)
+        send_confirmation_code_to_email(request)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class GetTokenView(TokenObtainPairView):
+    """Получение JWT-токена для в обмен на username и confirmation code."""
+
+    serializer_class = GetTokenSerializer
