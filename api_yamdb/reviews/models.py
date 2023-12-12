@@ -4,6 +4,7 @@ from django.contrib.auth import get_user_model
 from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
 
+
 User = get_user_model()
 
 
@@ -72,7 +73,7 @@ class Title(models.Model):
         return self.name
 
 
-class Reviews(models.Model):
+class Review(models.Model):
     title = models.ForeignKey(
         Title,
         on_delete=models.CASCADE,
@@ -94,8 +95,8 @@ class Reviews(models.Model):
                 message='Оценка не может превышать 10.',
             ),
             MinValueValidator(
-                limit_value=0,
-                message='Оценка не может быть меньше 0.',
+                limit_value=1,
+                message='Оценка не может быть меньше 1.',
             )
         ]
     )
@@ -141,6 +142,7 @@ class Comment(models.Model):
     class Meta:
         verbose_name = 'комментарий'
         verbose_name_plural = 'Комментарии'
+        ordering = ('-pub_date',)
 
     def __str__(self):
         return self.text
