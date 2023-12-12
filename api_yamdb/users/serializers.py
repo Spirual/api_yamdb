@@ -8,7 +8,18 @@ User = get_user_model()
 
 
 class SignupSerializer(serializers.ModelSerializer):
-    """Регистрация пользователя."""
+    """Регистрация пользователя.
+
+    Нельзя зарегистрировать username "me".
+    """
+
+    def validate_username(self, value):
+        if value == 'me':
+            raise serializers.ValidationError(
+                'Ошибка: нельзя использовать "me" '
+                'в качестве имени пользователя.'
+            )
+        return value
 
     class Meta:
         model = User
@@ -23,10 +34,10 @@ class GetTokenSerializer(serializers.Serializer):
 
     def validate(self, data):
         user = get_object_or_404(User, username=data.get('username'))
-        
+
         # валидируем код доступа
         if user.confirmation_code != data.get('confirmation_code'):
             raise serializers.ValidationError('Некорректный код подтверждения')
-        
+
         # возвращаем токен для юзера из запроса
         return {'access': str(AccessToken.for_user(user))}
