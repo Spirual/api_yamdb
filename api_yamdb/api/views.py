@@ -1,19 +1,20 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import filters, viewsets
 from rest_framework.pagination import LimitOffsetPagination
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
 
 from .mixins import CreateDestiyListModelMixin
 from reviews.models import (
     Category,
     Genre,
-    Title,
+    Title, Review,
 )
 from .serializers import (
     CategorySerializer,
     GenreSerializer,
     TitleWriteSerializer,
-    TitleReadSerializer, ReviewSerializer,
+    TitleReadSerializer, ReviewSerializer, CommentSerializer,
 )
 from .permissions import (
     IsAdminOrReadOnly,
@@ -75,3 +76,17 @@ class ReviewViewSet(ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user, title=self.get_title())
+
+
+class CommentViewSet(ModelViewSet):
+    serializer_class = CommentSerializer
+    permission_classes = (IsAuthenticatedOrReadOnly,)
+
+    def get_review(self):
+        return get_object_or_404(Review, id=self.kwargs.get('review_id'))
+
+    def get_queryset(self):
+        return self.get_review().comments.all()
+
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user, review=self.get_review())

@@ -9,7 +9,7 @@ from rest_framework.validators import UniqueTogetherValidator
 from reviews.models import (
     Category,
     Genre,
-    Title, Review,
+    Title, Review, Comment,
 )
 
 
@@ -92,3 +92,11 @@ class ReviewSerializer(ModelSerializer):
             raise serializers.ValidationError('Оценка должна быть от 1 до 10!')
         return value
 
+
+class CommentSerializer(ModelSerializer):
+    author = SlugRelatedField(slug_field='username', read_only=True)
+
+    class Meta:
+        model = Comment
+        fields = ('id', 'text', 'author', 'review', 'pub_date')
+        read_only_fields = ('review',)
