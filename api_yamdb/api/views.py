@@ -1,7 +1,10 @@
+from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
-from rest_framework import filters, viewsets
+from rest_framework import filters, status
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.viewsets import ModelViewSet
+from rest_framework.views import APIView
+from rest_framework.response import Response
 
 from .mixins import CreateDestiyListModelMixin
 from reviews.models import (
@@ -13,13 +16,19 @@ from .serializers import (
     CategorySerializer,
     GenreSerializer,
     TitleWriteSerializer,
-    TitleReadSerializer, ReviewSerializer, CommentSerializer,
+    TitleReadSerializer,
+    ReviewSerializer,
+    CommentSerializer,
+    UserSerializer,
+    UsersMeSerializer,
 )
 from .permissions import (
     IsAdminOrReadOnly,
-    IsAdmin,  # для /users/
-    IsAuthenticatedOrReadOnly  # для комментариев, отзывов и /users/me/
+    IsAdmin,
+    IsAuthenticatedOrReadOnly
 )
+
+User = get_user_model()
 
 
 class CategoryViewSet(CreateDestiyListModelMixin):
@@ -46,7 +55,7 @@ class GenreViewSet(CreateDestiyListModelMixin):
     lookup_field = 'slug'
 
 
-class TitleViewSet(viewsets.ModelViewSet):
+class TitleViewSet(ModelViewSet):
     """Вывод произведений."""
 
     permission_classes = (IsAdminOrReadOnly,)
@@ -96,3 +105,44 @@ class CommentViewSet(ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user, review=self.get_review())
+
+
+class UserViewSet(ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = (IsAdmin,)
+    # pagination_class = LimitOffsetPagination
+    http_method_names = ('get', 'post', 'patch', 'delete')
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('username',)
+
+
+class UsersMeView(APIView):
+    permission_classes = (IsAuthenticatedOrReadOnly,)
+
+    def get_object(self):
+        """Возвращает текущего пользователя."""
+        return get_object_or_404(User, username=self.request.user.username)
+
+    def get_serializer_class(self):
+        """Возвращает сериализатор для объекта в зависимости от метода."""
+        if self.request.method == 'PATCH':
+            return UsersMeSerializer
+        return UserSerializer
+
+    def get(self, request):
+        """Метод GET."""
+        me = self.get_object()
+        serializer = self.get_serializer_class()(me)
+        return Response(serializer.data)
+
+    def patch(self, request):
+        """Метод PATCH."""
+        me = self.get_object()
+        serializer = self.get_serializer_class()(me,
+                                                 data=request.data,
+                                                 partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
