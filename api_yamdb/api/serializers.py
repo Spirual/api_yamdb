@@ -41,7 +41,7 @@ class TitleWriteSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Title
-        fields = ('name', 'description', 'year', 'category', 'genre')
+        fields = ('id', 'name', 'description', 'year', 'category', 'genre')
 
     def validate_year(self, value):
         if value > datetime.date.today().year:
@@ -55,14 +55,10 @@ class TitleReadSerializer(serializers.ModelSerializer):
 
     genre = GenreSerializer(read_only=True, many=True)
     category = CategorySerializer(read_only=True)
-    rating = serializers.SerializerMethodField()
 
     class Meta:
         model = Title
         fields = ('id', 'name', 'year', 'rating','description', 'genre', 'category')
-
-    def get_rating(self, obj):
-        return 100500
 
 
 class ReviewSerializer(ModelSerializer):

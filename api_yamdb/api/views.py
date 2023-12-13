@@ -57,6 +57,9 @@ class TitleViewSet(viewsets.ModelViewSet):
     search_fields = (
         'name', 'year', 'category__slug', 'genre__slug'
     )
+    http_method_names = (
+        'get', 'post', 'patch', 'delete', 'head', 'options',
+    )
 
     def get_serializer_class(self):
         if self.action in ['create', 'update', 'partial_update']:
