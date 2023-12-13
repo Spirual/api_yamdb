@@ -5,7 +5,8 @@ from django.urls import include, path
 from .views import (
     CategoryViewSet,
     GenreViewSet,
-    TitleViewSet, ReviewViewSet,
+    TitleViewSet,
+    ReviewViewSet,
 )
 
 
@@ -19,6 +20,11 @@ router_review_v1.register(
     r'titles/(?P<title_id>\d+)/reviews',
     ReviewViewSet,
     basename='review',
+)
+router_review_v1.register(
+    r'titles/(?P<title_id>\d+)/reviews/(?P<review_id>\d+)/comments',
+    ReviewViewSet,
+    basename='comment',
 )
 
 urlpatterns = [
