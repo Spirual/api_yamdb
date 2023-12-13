@@ -1,7 +1,6 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import filters, viewsets
 from rest_framework.pagination import LimitOffsetPagination
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
 
 from .mixins import CreateDestiyListModelMixin
@@ -65,6 +64,7 @@ class TitleViewSet(viewsets.ModelViewSet):
 
 
 class ReviewViewSet(ModelViewSet):
+    """Вывод отзывов."""
     serializer_class = ReviewSerializer
     permission_classes = (IsAuthenticatedOrReadOnly,)
 
@@ -75,10 +75,13 @@ class ReviewViewSet(ModelViewSet):
         return self.get_title().reviews.all()
 
     def perform_create(self, serializer):
-        serializer.save(author=self.request.user, title=self.get_title())
+        title = self.get_title()
+        serializer.save(author=self.request.user, title=title)
+        title.update_rating()
 
 
 class CommentViewSet(ModelViewSet):
+    """Вывод комментариев."""
     serializer_class = CommentSerializer
     permission_classes = (IsAuthenticatedOrReadOnly,)
 
