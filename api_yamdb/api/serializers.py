@@ -1,11 +1,15 @@
 import datetime
 
 from rest_framework import serializers
+from rest_framework.fields import CurrentUserDefault
+from rest_framework.relations import SlugRelatedField
+from rest_framework.serializers import ModelSerializer
+from rest_framework.validators import UniqueTogetherValidator
 
 from reviews.models import (
     Category,
     Genre,
-    Title,
+    Title, Review,
 )
 
 
@@ -59,3 +63,32 @@ class TitleReadSerializer(serializers.ModelSerializer):
 
     def get_rating(self, obj):
         return 100500
+
+
+class ReviewSerializer(ModelSerializer):
+    title = serializers.SlugRelatedField(
+        slug_field='name',
+        read_only=True
+    )
+    author = SlugRelatedField(
+        read_only=True,
+        slug_field='username',
+        default=CurrentUserDefault(),
+    )
+
+    class Meta:
+        model = Review
+        fields = ('id', 'title', 'text', 'author', 'score', 'pub_date')
+        validators = [
+            UniqueTogetherValidator(
+                queryset=Review.objects.all(),
+                fields=('author', 'title'),
+                message='Вы уже оставляли отзыв.',
+            )
+        ]
+
+    def validate_score(self, value):
+        if not 1 <= value <= 10:
+            raise serializers.ValidationError('Оценка должна быть от 1 до 10!')
+        return value
+

@@ -1,5 +1,7 @@
+from django.shortcuts import get_object_or_404
 from rest_framework import filters, viewsets
 from rest_framework.pagination import LimitOffsetPagination
+from rest_framework.viewsets import ModelViewSet
 
 from .mixins import CreateDestiyListModelMixin
 from reviews.models import (
@@ -11,7 +13,7 @@ from .serializers import (
     CategorySerializer,
     GenreSerializer,
     TitleWriteSerializer,
-    TitleReadSerializer,
+    TitleReadSerializer, ReviewSerializer,
 )
 
 
@@ -54,3 +56,17 @@ class TitleViewSet(viewsets.ModelViewSet):
         if self.action in ['create', 'update', 'partial_update']:
             return TitleWriteSerializer
         return TitleReadSerializer
+
+
+class ReviewViewSet(ModelViewSet):
+    serializer_class = ReviewSerializer
+    #TODO нужно добавить прова доступа
+
+    def get_title(self):
+        return get_object_or_404(Title, id=self.kwargs.get('title_id'))
+
+    def get_queryset(self):
+        return self.get_title().reviews.all()
+
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user, title=self.get_title())
