@@ -41,7 +41,7 @@ class TitleWriteSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Title
-        fields = ('name', 'description', 'year', 'category', 'genre')
+        fields = ('id', 'name', 'description', 'year', 'category', 'genre')
 
     def validate_year(self, value):
         if value > datetime.date.today().year:
