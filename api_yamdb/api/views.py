@@ -15,12 +15,17 @@ from .serializers import (
     TitleWriteSerializer,
     TitleReadSerializer, ReviewSerializer,
 )
+from .permissions import (
+    IsAdminOrReadOnly,
+    IsAdmin,  # для /users/
+    IsAuthenticatedOrReadOnly  # для комментариев, отзывов и /users/me/
+)
 
 
 class CategoryViewSet(CreateDestiyListModelMixin):
     """Вывод категорий произведений."""
 
-    # permission_classes =
+    permission_classes = (IsAdminOrReadOnly,)
     queryset = Category.objects.all()
     pagination_class = LimitOffsetPagination
     serializer_class = CategorySerializer
@@ -32,7 +37,7 @@ class CategoryViewSet(CreateDestiyListModelMixin):
 class GenreViewSet(CreateDestiyListModelMixin):
     """Вывод жанров произведений."""
 
-    # permission_classes =
+    permission_classes = (IsAdminOrReadOnly,)
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
     pagination_class = LimitOffsetPagination
@@ -44,7 +49,7 @@ class GenreViewSet(CreateDestiyListModelMixin):
 class TitleViewSet(viewsets.ModelViewSet):
     """Вывод произведений."""
 
-    # permission_classes =
+    permission_classes = (IsAdminOrReadOnly,)
     queryset = Title.objects.all()
     pagination_class = LimitOffsetPagination
     filter_backends = (filters.SearchFilter,)
@@ -60,7 +65,7 @@ class TitleViewSet(viewsets.ModelViewSet):
 
 class ReviewViewSet(ModelViewSet):
     serializer_class = ReviewSerializer
-    #TODO нужно добавить прова доступа
+    permission_classes = (IsAuthenticatedOrReadOnly,)
 
     def get_title(self):
         return get_object_or_404(Title, id=self.kwargs.get('title_id'))
