@@ -61,11 +61,9 @@ class TitleReadSerializer(serializers.ModelSerializer):
         model = Title
         fields = ('id', 'name', 'year', 'rating','description', 'genre', 'category')
 
-    def get_rating(self, obj):
-        return 100500
-
 
 class ReviewSerializer(ModelSerializer):
+    """Вывод списка отзывов."""
     title = serializers.SlugRelatedField(
         slug_field='name',
         read_only=True
@@ -94,6 +92,7 @@ class ReviewSerializer(ModelSerializer):
 
 
 class CommentSerializer(ModelSerializer):
+    """Вывод списка комментариев."""
     author = SlugRelatedField(slug_field='username', read_only=True)
 
     class Meta:
