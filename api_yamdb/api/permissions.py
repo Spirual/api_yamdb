@@ -12,14 +12,16 @@ class IsAdminOrReadOnly(BasePermission):
         независимо от наличия авторизации возвращаем True,
         для остальных методов проверяем, что юзер из запроса является админом.
         """
-        return request.method in SAFE_METHODS or request.user.is_admin
+        if request.method in SAFE_METHODS:
+            return True
+        return request.user.is_authenticated and request.user.is_admin
 
 
 class IsAdmin(BasePermission):
 
     def has_permission(self, request, view):
         """Проверяем, что пользователь является админом"""
-        return request.user.is_admin
+        return request.user.is_authenticated and request.user.is_admin
 
 
 class IsAuthenticatedOrReadOnly(BasePermission):
@@ -31,7 +33,9 @@ class IsAuthenticatedOrReadOnly(BasePermission):
         независимо от наличия авторизации возвращаем True,
         для остальных методов проверяем, что юзер из запроса авторизован
         """
-        return request.method in SAFE_METHODS or request.user.is_authenticated
+        if request.method in SAFE_METHODS:
+            return True
+        return request.user.is_authenticated
 
     def has_object_permission(self, request, view, obj):
         """Проверяем права при попытке редактирования или удаления объекта.

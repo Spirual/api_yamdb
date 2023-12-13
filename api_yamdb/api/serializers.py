@@ -1,5 +1,7 @@
 import datetime
 
+from django.contrib.auth import get_user_model
+
 from rest_framework import serializers
 from rest_framework.fields import CurrentUserDefault
 from rest_framework.relations import SlugRelatedField
@@ -12,15 +14,18 @@ from reviews.models import (
     Title, Review, Comment,
 )
 
+User = get_user_model()
 
-class CategorySerializer(serializers.ModelSerializer):
+
+class CategorySerializer(ModelSerializer):
     """Вывод списка категорий."""
 
     class Meta:
         fields = ('name', 'slug',)
         model = Category
 
-class GenreSerializer(serializers.ModelSerializer):
+
+class GenreSerializer(ModelSerializer):
     """Вывод списка жанров."""
 
     class Meta:
@@ -28,7 +33,7 @@ class GenreSerializer(serializers.ModelSerializer):
         model = Genre
 
 
-class TitleWriteSerializer(serializers.ModelSerializer):
+class TitleWriteSerializer(ModelSerializer):
     """Сериализатор создания и редактирования произведения."""
 
     genre = serializers.SlugRelatedField(
@@ -50,8 +55,8 @@ class TitleWriteSerializer(serializers.ModelSerializer):
         return value
 
 
-class TitleReadSerializer(serializers.ModelSerializer):
-    """ Сериализатор вывода произведений."""
+class TitleReadSerializer(ModelSerializer):
+    """Сериализатор вывода произведений."""
 
     genre = GenreSerializer(read_only=True, many=True)
     category = CategorySerializer(read_only=True)
@@ -98,3 +103,22 @@ class CommentSerializer(ModelSerializer):
         model = Comment
         fields = ('id', 'text', 'author', 'review', 'pub_date')
         read_only_fields = ('review',)
+
+
+class UserSerializer(ModelSerializer):
+    """Вывод данных пользователя"""
+    class Meta:
+        model = User
+        fields = ('username',
+                  'email',
+                  'first_name',
+                  'last_name',
+                  'bio',
+                  'role'
+                  )
+
+
+class UsersMeSerializer(UserSerializer):
+    """Вывод данных по запросу PATCH users/me/."""
+
+    role = serializers.CharField(read_only=True)
