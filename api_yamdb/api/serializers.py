@@ -1,12 +1,12 @@
 import datetime
 
 from django.contrib.auth import get_user_model
+from django.shortcuts import get_object_or_404
 
 from rest_framework import serializers
 from rest_framework.fields import CurrentUserDefault
-from rest_framework.relations import SlugRelatedField, PrimaryKeyRelatedField
+from rest_framework.relations import SlugRelatedField
 from rest_framework.serializers import ModelSerializer
-from rest_framework.validators import UniqueTogetherValidator
 
 from reviews.models import (
     Category,
@@ -73,23 +73,28 @@ class ReviewSerializer(ModelSerializer):
         slug_field='username',
         default=CurrentUserDefault(),
     )
-    title = PrimaryKeyRelatedField(read_only=True, default=TitleReadSerializer())
 
     class Meta:
+        fields = ("id", "text", "author", "score", "pub_date")
         model = Review
-        fields = ('id', 'title', 'text', 'author', 'score', 'pub_date')
-        validators = [
-            UniqueTogetherValidator(
-                queryset=Review.objects.all(),
-                fields=('author', 'title'),
-                message='Вы уже оставляли отзыв.',
-            )
-        ]
 
     def validate_score(self, value):
         if not 1 <= value <= 10:
             raise serializers.ValidationError('Оценка должна быть от 1 до 10!')
         return value
+
+    def validate(self, data):
+        title_id = self.context['view'].kwargs.get('title_id')
+        request = self.context['request']
+        title = get_object_or_404(Title, id=title_id)
+        if request.method == 'POST':
+            if Review.objects.filter(
+                author=request.user, title=title
+            ).exists():
+                raise serializers.ValidationError(
+                    'Можно оставить только один отзыв!'
+                )
+        return data
 
 
 class CommentSerializer(ModelSerializer):
