@@ -121,6 +121,7 @@ class UserViewSet(ModelViewSet):
     http_method_names = ('get', 'post', 'patch', 'delete')
     filter_backends = (filters.SearchFilter,)
     search_fields = ('username',)
+    lookup_field = 'username'
 
 
 class UsersMeView(APIView):
