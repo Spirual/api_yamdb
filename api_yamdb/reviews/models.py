@@ -63,7 +63,7 @@ class Title(models.Model):
         null=True,
         verbose_name='Категория',
     )
-    rating = models.IntegerField(default=0)
+    rating = models.IntegerField(null=True, blank=True)
 
     class Meta:
         default_related_name = 'titles'
@@ -73,7 +73,7 @@ class Title(models.Model):
     def update_rating(self):
         avg_rating = self.reviews.aggregate(
             avg_rating=Avg('score'))['avg_rating']
-        self.rating = round(avg_rating) if avg_rating is not None else 0
+        self.rating = round(avg_rating) if avg_rating is not None else None
         self.save()
 
     def __str__(self):

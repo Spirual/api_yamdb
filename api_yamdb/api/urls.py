@@ -8,7 +8,7 @@ from .views import (
     TitleViewSet,
     ReviewViewSet,
     UserViewSet,
-    UsersMeView,
+    UsersMeView, CommentViewSet,
 )
 from users.views import SignupView, GetTokenView
 
@@ -26,7 +26,7 @@ router_review_v1.register(
 )
 router_review_v1.register(
     r'titles/(?P<title_id>\d+)/reviews/(?P<review_id>\d+)/comments',
-    ReviewViewSet,
+    CommentViewSet,
     basename='comment',
 )
 

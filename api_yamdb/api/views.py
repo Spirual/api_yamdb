@@ -79,6 +79,9 @@ class ReviewViewSet(ModelViewSet):
     """Вывод отзывов."""
     serializer_class = ReviewSerializer
     permission_classes = (IsAuthenticatedOrReadOnly,)
+    http_method_names = (
+        'get', 'post', 'patch', 'delete', 'head', 'options',
+    )
 
     def get_title(self):
         return get_object_or_404(Title, id=self.kwargs.get('title_id'))
@@ -96,6 +99,9 @@ class CommentViewSet(ModelViewSet):
     """Вывод комментариев."""
     serializer_class = CommentSerializer
     permission_classes = (IsAuthenticatedOrReadOnly,)
+    http_method_names = (
+        'get', 'post', 'patch', 'delete', 'head', 'options',
+    )
 
     def get_review(self):
         return get_object_or_404(Review, id=self.kwargs.get('review_id'))
