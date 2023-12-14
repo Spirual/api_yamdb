@@ -66,7 +66,7 @@ class TitleReadSerializer(ModelSerializer):
         fields = ('id', 'name', 'year', 'rating','description', 'genre', 'category')
 
 
-class ReviewSerializer(serializers.ModelSerializer):
+class ReviewSerializer(ModelSerializer):
     """Вывод списка отзывов."""
     author = SlugRelatedField(
         read_only=True,
