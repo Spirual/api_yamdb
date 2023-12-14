@@ -6,6 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.pagination import LimitOffsetPagination
 from django_filters.rest_framework import DjangoFilterBackend
 
 from .mixins import CreateDestiyListModelMixin
@@ -40,6 +41,7 @@ class CategoryViewSet(CreateDestiyListModelMixin):
     permission_classes = (IsAdminOrReadOnly,)
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
+    pagination_class = LimitOffsetPagination
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name',)
     lookup_field = 'slug'
@@ -51,6 +53,7 @@ class GenreViewSet(CreateDestiyListModelMixin):
     permission_classes = (IsAdminOrReadOnly,)
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
+    pagination_class = LimitOffsetPagination
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name',)
     lookup_field = 'slug'
@@ -61,6 +64,7 @@ class TitleViewSet(ModelViewSet):
 
     permission_classes = (IsAdminOrReadOnly,)
     queryset = Title.objects.all()
+    pagination_class = LimitOffsetPagination
     filter_backends = (DjangoFilterBackend,)
     filterset_class = TitleFilter
     http_method_names = (
@@ -114,6 +118,7 @@ class CommentViewSet(ModelViewSet):
 class UserViewSet(ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    pagination_class = LimitOffsetPagination
     permission_classes = (IsAdmin,)
     http_method_names = ('get', 'post', 'patch', 'delete')
     filter_backends = (filters.SearchFilter,)
