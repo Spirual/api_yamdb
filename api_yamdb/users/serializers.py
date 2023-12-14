@@ -40,4 +40,4 @@ class GetTokenSerializer(serializers.Serializer):
             raise serializers.ValidationError('Некорректный код подтверждения')
 
         # возвращаем токен для юзера из запроса
-        return {'access': str(AccessToken.for_user(user))}
+        return {'token': str(AccessToken.for_user(user))}
