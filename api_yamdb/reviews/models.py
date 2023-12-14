@@ -53,7 +53,6 @@ class Title(models.Model):
     )
     description = models.TextField(
         'Описание',
-        null=True,
         blank=True,
     )
     genre = models.ManyToManyField(Genre, verbose_name='Жанр')
