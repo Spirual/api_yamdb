@@ -5,6 +5,7 @@ from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from django_filters.rest_framework import DjangoFilterBackend
 
 from .mixins import CreateDestiyListModelMixin
 from reviews.models import (
@@ -27,6 +28,7 @@ from .permissions import (
     IsAdmin,
     IsAuthenticatedOrReadOnly
 )
+from .filters import TitleFilter
 
 User = get_user_model()
 
@@ -61,10 +63,8 @@ class TitleViewSet(ModelViewSet):
     permission_classes = (IsAdminOrReadOnly,)
     queryset = Title.objects.all()
     pagination_class = LimitOffsetPagination
-    filter_backends = (filters.SearchFilter,)
-    search_fields = (
-        'name', 'year', 'category__slug', 'genre__slug'
-    )
+    filter_backends = (DjangoFilterBackend,)
+    filterset_class = TitleFilter
     http_method_names = (
         'get', 'post', 'patch', 'delete', 'head', 'options',
     )

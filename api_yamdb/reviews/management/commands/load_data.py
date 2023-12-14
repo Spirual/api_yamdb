@@ -1,10 +1,10 @@
 import csv
 
+from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand
 from django.core.exceptions import FieldError
 from django.db import transaction
 
-from users.models import CustomUser
 from reviews.models import (
     Category,
     Title,
@@ -12,6 +12,7 @@ from reviews.models import (
     Genre,
     Review,
 )
+User = get_user_model()
 
 
 def import_title(row):
@@ -26,20 +27,20 @@ def import_title_genre(row):
 
 def import_review(row):
     title = Title.objects.get(id=row['title_id'])
-    author = CustomUser.objects.get(id=row['author'])
+    author = User.objects.get(id=row['author'])
     row.update(title=title, author=author)
     Review.objects.create(**row)
 
 def import_comment(row):
     review = Review.objects.get(id=row['review_id'])
-    author = CustomUser.objects.get(id=row['author'])
+    author = User.objects.get(id=row['author'])
     row.update(review=review, author=author)
     Comment.objects.create(**row)
 
 file_names_and_model = {
     'category.csv': (Category,),
     'genre.csv': (Genre,),
-    'users.csv': (CustomUser,),
+    'users.csv': (User,),
     'titles.csv': (Title, import_title),
     'review.csv': (Review, import_review),
     'comments.csv': (Comment, import_comment),
@@ -73,5 +74,3 @@ class Command(BaseCommand):
         for file_name, _ in file_names_and_model.items():
             self.importer(file_name)
         self.stdout.write(self.style.SUCCESS(f'Импорт завершен!'))
-
-
