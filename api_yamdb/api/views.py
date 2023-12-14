@@ -1,12 +1,11 @@
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
-
 from rest_framework import filters, status
+from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
-from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.pagination import LimitOffsetPagination
+from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 
 from .mixins import CreateDestiyListModelMixin
@@ -40,8 +39,8 @@ class CategoryViewSet(CreateDestiyListModelMixin):
 
     permission_classes = (IsAdminOrReadOnly,)
     queryset = Category.objects.all()
-    serializer_class = CategorySerializer
     pagination_class = LimitOffsetPagination
+    serializer_class = CategorySerializer
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name',)
     lookup_field = 'slug'
