@@ -4,7 +4,7 @@ from django.contrib.auth import get_user_model
 
 from rest_framework import serializers
 from rest_framework.fields import CurrentUserDefault
-from rest_framework.relations import SlugRelatedField
+from rest_framework.relations import SlugRelatedField, PrimaryKeyRelatedField
 from rest_framework.serializers import ModelSerializer
 from rest_framework.validators import UniqueTogetherValidator
 
@@ -68,15 +68,12 @@ class TitleReadSerializer(ModelSerializer):
 
 class ReviewSerializer(ModelSerializer):
     """Вывод списка отзывов."""
-    title = serializers.SlugRelatedField(
-        slug_field='name',
-        read_only=True
-    )
     author = SlugRelatedField(
         read_only=True,
         slug_field='username',
         default=CurrentUserDefault(),
     )
+    title = PrimaryKeyRelatedField(read_only=True, default=TitleReadSerializer())
 
     class Meta:
         model = Review
