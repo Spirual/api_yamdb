@@ -1,7 +1,7 @@
+from django.urls import include, path
 from rest_framework import routers
 
-from django.urls import include, path
-
+from users.views import SignupView, GetTokenView
 from .views import (
     CategoryViewSet,
     GenreViewSet,
@@ -10,7 +10,6 @@ from .views import (
     UserViewSet,
     UsersMeView, CommentViewSet,
 )
-from users.views import SignupView, GetTokenView
 
 app_name = 'api'
 
