@@ -31,6 +31,16 @@ from .serializers import (
 User = get_user_model()
 
 
+APPLY_METHODS = (
+        'get',
+        'post',
+        'patch',
+        'delete',
+        'head',
+        'options',
+    )
+
+
 class CategoryViewSet(CreateDestiyListModelMixin):
     """Вывод категорий произведений."""
 
@@ -63,14 +73,7 @@ class TitleViewSet(ModelViewSet):
     pagination_class = LimitOffsetPagination
     filter_backends = (DjangoFilterBackend,)
     filterset_class = TitleFilter
-    http_method_names = (
-        'get',
-        'post',
-        'patch',
-        'delete',
-        'head',
-        'options',
-    )
+    http_method_names = APPLY_METHODS
 
     def get_serializer_class(self):
         if self.action in ['create', 'update', 'partial_update']:
@@ -83,14 +86,7 @@ class ReviewViewSet(ModelViewSet):
 
     serializer_class = ReviewSerializer
     permission_classes = (IsAuthenticatedOrReadOnly,)
-    http_method_names = (
-        'get',
-        'post',
-        'patch',
-        'delete',
-        'head',
-        'options',
-    )
+    http_method_names = APPLY_METHODS
 
     def get_title(self):
         return get_object_or_404(Title, id=self.kwargs.get('title_id'))
@@ -109,14 +105,7 @@ class CommentViewSet(ModelViewSet):
 
     serializer_class = CommentSerializer
     permission_classes = (IsAuthenticatedOrReadOnly,)
-    http_method_names = (
-        'get',
-        'post',
-        'patch',
-        'delete',
-        'head',
-        'options',
-    )
+    http_method_names = APPLY_METHODS
 
     def get_title(self):
         return get_object_or_404(Title, id=self.kwargs.get('title_id'))
