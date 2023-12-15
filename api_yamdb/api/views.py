@@ -11,15 +11,12 @@ from rest_framework.viewsets import ModelViewSet
 from reviews.models import (
     Category,
     Genre,
-    Title, Review,
+    Title,
+    Review,
 )
 from .filters import TitleFilter
 from .mixins import CreateDestiyListModelMixin
-from .permissions import (
-    IsAdminOrReadOnly,
-    IsAdmin,
-    IsAuthenticatedOrReadOnly
-)
+from .permissions import IsAdminOrReadOnly, IsAdmin, IsAuthenticatedOrReadOnly
 from .serializers import (
     CategorySerializer,
     GenreSerializer,
@@ -67,7 +64,12 @@ class TitleViewSet(ModelViewSet):
     filter_backends = (DjangoFilterBackend,)
     filterset_class = TitleFilter
     http_method_names = (
-        'get', 'post', 'patch', 'delete', 'head', 'options',
+        'get',
+        'post',
+        'patch',
+        'delete',
+        'head',
+        'options',
     )
 
     def get_serializer_class(self):
@@ -78,10 +80,16 @@ class TitleViewSet(ModelViewSet):
 
 class ReviewViewSet(ModelViewSet):
     """Вывод отзывов."""
+
     serializer_class = ReviewSerializer
     permission_classes = (IsAuthenticatedOrReadOnly,)
     http_method_names = (
-        'get', 'post', 'patch', 'delete', 'head', 'options',
+        'get',
+        'post',
+        'patch',
+        'delete',
+        'head',
+        'options',
     )
 
     def get_title(self):
@@ -98,10 +106,16 @@ class ReviewViewSet(ModelViewSet):
 
 class CommentViewSet(ModelViewSet):
     """Вывод комментариев."""
+
     serializer_class = CommentSerializer
     permission_classes = (IsAuthenticatedOrReadOnly,)
     http_method_names = (
-        'get', 'post', 'patch', 'delete', 'head', 'options',
+        'get',
+        'post',
+        'patch',
+        'delete',
+        'head',
+        'options',
     )
 
     def get_review(self):
@@ -147,9 +161,9 @@ class UsersMeView(APIView):
     def patch(self, request):
         """Метод PATCH."""
         me = self.get_object()
-        serializer = self.get_serializer_class()(me,
-                                                 data=request.data,
-                                                 partial=True)
+        serializer = self.get_serializer_class()(
+            me, data=request.data, partial=True
+        )
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)

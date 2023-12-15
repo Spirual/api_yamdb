@@ -17,14 +17,15 @@ class SignupView(APIView):
     Если пользователь не существует, валидируем входящие данные,
     сохраняем пользователя в базе и отправляем письмо.
     """
+
     def post(self, request):
         serializer = SignupSerializer(data=request.data)
-        if User.objects.filter(username=request.data.get('username'),
-                               email=request.data.get('email')
-                               ).exists():
+        if User.objects.filter(
+            username=request.data.get('username'),
+            email=request.data.get('email'),
+        ).exists():
             send_confirmation_code_to_email(request)
-            return Response(request.data,
-                            status=status.HTTP_200_OK)
+            return Response(request.data, status=status.HTTP_200_OK)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         send_confirmation_code_to_email(request)

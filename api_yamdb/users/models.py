@@ -14,24 +14,17 @@ class CustomUser(AbstractUser):
     """
 
     email = models.EmailField(
-        verbose_name='E-mail',
-        max_length=254,
-        unique=True
+        verbose_name='E-mail', max_length=254, unique=True
     )
-    bio = models.TextField(
-        verbose_name='Биография',
-        blank=True
-    )
+    bio = models.TextField(verbose_name='Биография', blank=True)
     role = models.CharField(
         verbose_name='Роль',
         max_length=20,
         choices=UserRole.choices(),
-        default=UserRole.USER.value[0]
+        default=UserRole.USER.value[0],
     )
     confirmation_code = models.CharField(
-        verbose_name='Код подтверждения',
-        max_length=32,
-        blank=True
+        verbose_name='Код подтверждения', max_length=32, blank=True
     )
 
     class Meta:

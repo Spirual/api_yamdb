@@ -3,8 +3,6 @@ from django.contrib.auth.admin import UserAdmin
 
 from .models import CustomUser
 
-UserAdmin.fieldsets += (
-    ('Extra Fields', {'fields': ('bio', 'role')}),
-)
+UserAdmin.fieldsets += (('Extra Fields', {'fields': ('bio', 'role')}),)
 # Регистрируем модель в админке:
 admin.site.register(CustomUser, UserAdmin)

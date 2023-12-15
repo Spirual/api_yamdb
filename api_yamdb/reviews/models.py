@@ -13,8 +13,10 @@ class Category(models.Model):
     slug = models.SlugField(
         'Идентификатор',
         unique=True,
-        help_text=('Идентификатор страницы для URL; '
-                   'разрешены символы латиницы, цифры, дефис и подчёркивание.')
+        help_text=(
+            'Идентификатор страницы для URL; '
+            'разрешены символы латиницы, цифры, дефис и подчёркивание.'
+        ),
     )
 
     class Meta:
@@ -30,8 +32,10 @@ class Genre(models.Model):
     slug = models.SlugField(
         'Идентификатор',
         unique=True,
-        help_text=('Идентификатор страницы для URL; '
-                   'разрешены символы латиницы, цифры, дефис и подчёркивание.')
+        help_text=(
+            'Идентификатор страницы для URL; '
+            'разрешены символы латиницы, цифры, дефис и подчёркивание.'
+        ),
     )
 
     class Meta:
@@ -46,10 +50,12 @@ class Title(models.Model):
     name = models.CharField('Название произведения', max_length=256)
     year = models.PositiveSmallIntegerField(
         'Год выпуска',
-        validators=[MaxValueValidator(
-            datetime.date.today().year,
-            message='Произведение не может быть из будущего!'
-        )]
+        validators=[
+            MaxValueValidator(
+                datetime.date.today().year,
+                message='Произведение не может быть из будущего!',
+            )
+        ],
     )
     description = models.TextField(
         'Описание',
@@ -70,8 +76,9 @@ class Title(models.Model):
         verbose_name_plural = 'Произведения'
 
     def update_rating(self):
-        avg_rating = self.reviews.aggregate(
-            avg_rating=Avg('score'))['avg_rating']
+        avg_rating = self.reviews.aggregate(avg_rating=Avg('score'))[
+            'avg_rating'
+        ]
         self.rating = round(avg_rating) if avg_rating is not None else None
         self.save()
 
@@ -103,8 +110,8 @@ class Review(models.Model):
             MinValueValidator(
                 limit_value=1,
                 message='Оценка не может быть меньше 1.',
-            )
-        ]
+            ),
+        ],
     )
     pub_date = models.DateTimeField(
         verbose_name='Дата публикации',
@@ -138,7 +145,7 @@ class Comment(models.Model):
         User,
         on_delete=models.CASCADE,
         related_name='comments',
-        verbose_name='Автор'
+        verbose_name='Автор',
     )
     pub_date = models.DateTimeField(
         verbose_name='Дата публикации',

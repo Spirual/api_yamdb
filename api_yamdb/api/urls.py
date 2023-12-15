@@ -8,16 +8,21 @@ from .views import (
     TitleViewSet,
     ReviewViewSet,
     UserViewSet,
-    UsersMeView, CommentViewSet,
+    UsersMeView,
+    CommentViewSet,
 )
 
 app_name = 'api'
 
 router_review_v1 = routers.DefaultRouter()
-router_review_v1.register('users', UserViewSet, basename='user',)
-router_review_v1.register('categories', CategoryViewSet)
-router_review_v1.register('genres', GenreViewSet)
-router_review_v1.register('titles', TitleViewSet)
+router_review_v1.register(
+    'users',
+    UserViewSet,
+    basename='user',
+)
+router_review_v1.register('categories', CategoryViewSet, basename='category')
+router_review_v1.register('genres', GenreViewSet, basename='genre')
+router_review_v1.register('titles', TitleViewSet, basename='title')
 router_review_v1.register(
     r'titles/(?P<title_id>\d+)/reviews',
     ReviewViewSet,
@@ -33,5 +38,5 @@ urlpatterns = [
     path('v1/auth/signup/', SignupView.as_view(), name='signup'),
     path('v1/auth/token/', GetTokenView.as_view(), name='get_token'),
     path('v1/users/me/', UsersMeView.as_view(), name='users_me'),
-    path('v1/', include(router_review_v1.urls))
+    path('v1/', include(router_review_v1.urls)),
 ]

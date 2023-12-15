@@ -10,7 +10,9 @@ from rest_framework.serializers import ModelSerializer
 from reviews.models import (
     Category,
     Genre,
-    Title, Review, Comment,
+    Title,
+    Review,
+    Comment,
 )
 
 User = get_user_model()
@@ -20,7 +22,10 @@ class CategorySerializer(ModelSerializer):
     """Вывод списка категорий."""
 
     class Meta:
-        fields = ('name', 'slug',)
+        fields = (
+            'name',
+            'slug',
+        )
         model = Category
 
 
@@ -28,7 +33,10 @@ class GenreSerializer(ModelSerializer):
     """Вывод списка жанров."""
 
     class Meta:
-        fields = ('name', 'slug',)
+        fields = (
+            'name',
+            'slug',
+        )
         model = Genre
 
 
@@ -36,12 +44,11 @@ class TitleWriteSerializer(ModelSerializer):
     """Сериализатор создания и редактирования произведения."""
 
     genre = serializers.SlugRelatedField(
-        many=True,
-        slug_field='slug',
-        queryset=Genre.objects.all())
+        many=True, slug_field='slug', queryset=Genre.objects.all()
+    )
     category = serializers.SlugRelatedField(
-        slug_field='slug',
-        queryset=Category.objects.all())
+        slug_field='slug', queryset=Category.objects.all()
+    )
 
     class Meta:
         model = Title
@@ -50,7 +57,8 @@ class TitleWriteSerializer(ModelSerializer):
     def validate_year(self, value):
         if value > datetime.date.today().year:
             raise serializers.ValidationError(
-                'Произведение не может быть из будущего!')
+                'Произведение не может быть из будущего!'
+            )
         return value
 
 
@@ -62,11 +70,20 @@ class TitleReadSerializer(ModelSerializer):
 
     class Meta:
         model = Title
-        fields = ('id', 'name', 'year', 'rating','description', 'genre', 'category')
+        fields = (
+            'id',
+            'name',
+            'year',
+            'rating',
+            'description',
+            'genre',
+            'category',
+        )
 
 
 class ReviewSerializer(ModelSerializer):
     """Вывод списка отзывов."""
+
     author = SlugRelatedField(
         read_only=True,
         slug_field='username',
@@ -74,7 +91,7 @@ class ReviewSerializer(ModelSerializer):
     )
 
     class Meta:
-        fields = ("id", "text", "author", "score", "pub_date")
+        fields = ('id', 'text', 'author', 'score', 'pub_date')
         model = Review
 
     def validate_score(self, value):
@@ -98,6 +115,7 @@ class ReviewSerializer(ModelSerializer):
 
 class CommentSerializer(ModelSerializer):
     """Вывод списка комментариев."""
+
     author = SlugRelatedField(slug_field='username', read_only=True)
 
     class Meta:
@@ -108,15 +126,17 @@ class CommentSerializer(ModelSerializer):
 
 class UserSerializer(ModelSerializer):
     """Вывод данных пользователя"""
+
     class Meta:
         model = User
-        fields = ('username',
-                  'email',
-                  'first_name',
-                  'last_name',
-                  'bio',
-                  'role'
-                  )
+        fields = (
+            'username',
+            'email',
+            'first_name',
+            'last_name',
+            'bio',
+            'role',
+        )
 
 
 class UsersMeSerializer(UserSerializer):
