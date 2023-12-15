@@ -14,14 +14,79 @@
 Добавлять отзывы, комментарии и ставить оценки могут только аутентифицированные пользователи.
 
 ## Стек:
--
+Django 3.2, Simple JWT, Python 3.11, DRF, SQLite
 
 ## Как запустить проект
--
+Клонировать репозиторий и перейти в него в командной строке:
+`git clone url.git`
+
+### Cоздать и активировать виртуальное окружение:
+`python3 -m venv env`
+`source env/bin/activate`
+
+### Установить зависимости из файла requirements.txt:
+`python3 -m pip install --upgrade pip`
+`pip install -r requirements.txt`
+
+### Выполнить миграции:
+`python3 manage.py migrate`
+
+### Запустить проект:
+`python3 manage.py runserver`
 
 ## Примеры
-* Пример 1
-* Пример 2
-
+* Регистрация полоьзователя
+```
+POST /auth/signup/
+{
+  "email": "user@example.com",
+  "username": "string"
+}
+Response
+{
+  "email": "string",
+  "username": "string"
+}
+```
+* Получение токена
+```
+POST /auth/token/
+{
+  "username": "string",
+  "confirmation_code": "string"
+}
+Response
+{
+  "token": "string"
+}
+```
+* Получение списка произведений
+```
+GET /titles/
+{
+  "count": 0,
+  "next": "string",
+  "previous": "string",
+  "results": [
+    {
+      "id": 0,
+      "name": "string",
+      "year": 0,
+      "rating": 0,
+      "description": "string",
+      "genre": [
+        {
+          "name": "string",
+          "slug": "string"
+        }
+      ],
+      "category": {
+        "name": "string",
+        "slug": "string"
+      }
+    }
+  ]
+}
+```
 Подробная документация по API проекта: 
 http://127.0.0.1:8000/redoc/
