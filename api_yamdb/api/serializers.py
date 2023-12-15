@@ -61,6 +61,8 @@ class TitleWriteSerializer(ModelSerializer):
             )
         return value
 
+    def to_representation(self, instance):
+        return TitleReadSerializer(instance).data
 
 class TitleReadSerializer(ModelSerializer):
     """Сериализатор вывода произведений."""
