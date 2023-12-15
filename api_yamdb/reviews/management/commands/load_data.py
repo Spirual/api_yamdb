@@ -83,4 +83,4 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         for file_name, _ in file_names_and_model.items():
             self.importer(file_name)
-        self.stdout.write(self.style.SUCCESS(f'Импорт завершен!'))
+        self.stdout.write(self.style.SUCCESS('Импорт завершен!'))
