@@ -123,7 +123,6 @@ class CommentSerializer(ModelSerializer):
     class Meta:
         model = Comment
         fields = ('id', 'text', 'author', 'pub_date')
-        read_only_fields = ('review',)
 
 
 class UserSerializer(ModelSerializer):
