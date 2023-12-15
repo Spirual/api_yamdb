@@ -1,4 +1,5 @@
 from django.contrib.auth.models import AbstractUser
+from .validators import validate_username, username_validator
 from django.db import models
 
 from .enums import UserRole
@@ -13,6 +14,13 @@ class CustomUser(AbstractUser):
     так как они удовлетворяют требованиям.
     """
 
+    username = models.CharField(
+        "Username",
+        max_length=150,
+        unique=True,
+        help_text="Имя пользователя",
+        validators=[validate_username, username_validator],
+    )
     email = models.EmailField(
         verbose_name='E-mail', max_length=254, unique=True
     )

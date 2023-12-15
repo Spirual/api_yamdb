@@ -127,7 +127,7 @@ class UserViewSet(ModelViewSet):
     serializer_class = UserSerializer
     pagination_class = LimitOffsetPagination
     permission_classes = (IsAdmin,)
-    http_method_names = ('get', 'post', 'patch', 'delete')
+    http_method_names = APPLY_METHODS
     filter_backends = (filters.SearchFilter,)
     search_fields = ('username',)
     lookup_field = 'username'

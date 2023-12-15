@@ -7,18 +7,7 @@ User = get_user_model()
 
 
 class SignupSerializer(serializers.ModelSerializer):
-    """Регистрация пользователя.
-
-    Нельзя зарегистрировать username "me".
-    """
-
-    def validate_username(self, value):
-        if value == 'me':
-            raise serializers.ValidationError(
-                'Ошибка: нельзя использовать "me" '
-                'в качестве имени пользователя.'
-            )
-        return value
+    """Регистрация пользователя."""
 
     class Meta:
         model = User
