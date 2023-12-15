@@ -125,6 +125,8 @@ venv.bak/
 .dmypy.json
 dmypy.json
 
+.ruff*
+
 # Pyre type checker
 .pyre/
 
@@ -148,3 +150,4 @@ dmypy.json
 # папки со статикой и медиа
 media/
 
+sent_emails/
