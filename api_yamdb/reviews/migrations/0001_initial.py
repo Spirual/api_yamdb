@@ -6,19 +6,37 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
             name='Category',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=256, verbose_name='Название категории')),
-                ('slug', models.SlugField(help_text='Идентификатор страницы для URL; разрешены символы латиницы, цифры, дефис и подчёркивание.', unique=True, verbose_name='Идентификатор')),
+                (
+                    'id',
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name='ID',
+                    ),
+                ),
+                (
+                    'name',
+                    models.CharField(
+                        max_length=256, verbose_name='Название категории'
+                    ),
+                ),
+                (
+                    'slug',
+                    models.SlugField(
+                        help_text='Идентификатор страницы для URL; разрешены символы латиницы, цифры, дефис и подчёркивание.',
+                        unique=True,
+                        verbose_name='Идентификатор',
+                    ),
+                ),
             ],
             options={
                 'verbose_name': 'категория',
@@ -28,9 +46,29 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Genre',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=256, verbose_name='Название жанра')),
-                ('slug', models.SlugField(help_text='Идентификатор страницы для URL; разрешены символы латиницы, цифры, дефис и подчёркивание.', unique=True, verbose_name='Идентификатор')),
+                (
+                    'id',
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name='ID',
+                    ),
+                ),
+                (
+                    'name',
+                    models.CharField(
+                        max_length=256, verbose_name='Название жанра'
+                    ),
+                ),
+                (
+                    'slug',
+                    models.SlugField(
+                        help_text='Идентификатор страницы для URL; разрешены символы латиницы, цифры, дефис и подчёркивание.',
+                        unique=True,
+                        verbose_name='Идентификатор',
+                    ),
+                ),
             ],
             options={
                 'verbose_name': 'жанр',
@@ -40,12 +78,57 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Title',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=256, verbose_name='Название произведения')),
-                ('year', models.PositiveSmallIntegerField(validators=[django.core.validators.MaxValueValidator(2023, message='Произведение не может быть из будущего!')], verbose_name='Год выпуска')),
-                ('description', models.TextField(blank=True, null=True, verbose_name='Описание')),
-                ('category', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='titles', to='reviews.category', verbose_name='Категория')),
-                ('genre', models.ManyToManyField(related_name='titles', to='reviews.Genre', verbose_name='Жанр')),
+                (
+                    'id',
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name='ID',
+                    ),
+                ),
+                (
+                    'name',
+                    models.CharField(
+                        max_length=256, verbose_name='Название произведения'
+                    ),
+                ),
+                (
+                    'year',
+                    models.PositiveSmallIntegerField(
+                        validators=[
+                            django.core.validators.MaxValueValidator(
+                                2023,
+                                message='Произведение не может быть из будущего!',
+                            )
+                        ],
+                        verbose_name='Год выпуска',
+                    ),
+                ),
+                (
+                    'description',
+                    models.TextField(
+                        blank=True, null=True, verbose_name='Описание'
+                    ),
+                ),
+                (
+                    'category',
+                    models.ForeignKey(
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name='titles',
+                        to='reviews.category',
+                        verbose_name='Категория',
+                    ),
+                ),
+                (
+                    'genre',
+                    models.ManyToManyField(
+                        related_name='titles',
+                        to='reviews.Genre',
+                        verbose_name='Жанр',
+                    ),
+                ),
             ],
             options={
                 'verbose_name': 'произведение',

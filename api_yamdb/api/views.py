@@ -12,7 +12,6 @@ from reviews.models import (
     Category,
     Genre,
     Title,
-    Review,
 )
 from .filters import TitleFilter
 from .mixins import CreateDestiyListModelMixin
@@ -32,13 +31,13 @@ User = get_user_model()
 
 
 APPLY_METHODS = (
-        'get',
-        'post',
-        'patch',
-        'delete',
-        'head',
-        'options',
-    )
+    'get',
+    'post',
+    'patch',
+    'delete',
+    'head',
+    'options',
+)
 
 
 class CategoryViewSet(CreateDestiyListModelMixin):

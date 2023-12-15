@@ -17,6 +17,7 @@ class SignupView(APIView):
     Если пользователь не существует, валидируем входящие данные,
     сохраняем пользователя в базе и отправляем письмо.
     """
+
     def post(self, request):
         serializer = SignupSerializer(data=request.data)
         existing_user = User.objects.filter(
@@ -25,7 +26,9 @@ class SignupView(APIView):
         if existing_user:
             if existing_user.email != request.data.get('email'):
                 serializer.is_valid()
-                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                return Response(
+                    serializer.errors, status=status.HTTP_400_BAD_REQUEST
+                )
             send_confirmation_code_to_email(request)
             return Response(request.data, status=status.HTTP_200_OK)
         serializer.is_valid(raise_exception=True)

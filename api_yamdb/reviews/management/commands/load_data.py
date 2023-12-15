@@ -60,7 +60,9 @@ class Command(BaseCommand):
     def importer(self, file_name):
         file = str(self.directory_path + file_name)
         with open(file=file, encoding='utf-8') as r_file:
-            reader = csv.DictReader(r_file,)
+            reader = csv.DictReader(
+                r_file,
+            )
             import_counter = 0
             for row in reader:
                 try:
