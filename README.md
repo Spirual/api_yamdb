@@ -35,7 +35,7 @@ Django 3.2, Simple JWT, Python 3.11, DRF, SQLite
 `python3 manage.py runserver`
 
 ## Примеры
-* Регистрация полоьзователя
+* Регистрация пользователя
 ```
 POST /auth/signup/
 {
