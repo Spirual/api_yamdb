@@ -61,6 +61,8 @@ class TitleWriteSerializer(ModelSerializer):
             )
         return value
 
+    def to_representation(self, instance):
+        return TitleReadSerializer(instance).data
 
 class TitleReadSerializer(ModelSerializer):
     """Сериализатор вывода произведений."""
@@ -120,8 +122,7 @@ class CommentSerializer(ModelSerializer):
 
     class Meta:
         model = Comment
-        fields = ('id', 'text', 'author', 'review', 'pub_date')
-        read_only_fields = ('review',)
+        fields = ('id', 'text', 'author', 'pub_date')
 
 
 class UserSerializer(ModelSerializer):
