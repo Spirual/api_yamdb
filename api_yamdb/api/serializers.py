@@ -3,7 +3,7 @@ import datetime
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers
-from rest_framework.fields import CurrentUserDefault
+from rest_framework.fields import CurrentUserDefault, IntegerField
 from rest_framework.relations import SlugRelatedField
 from rest_framework.serializers import ModelSerializer
 
@@ -64,11 +64,13 @@ class TitleWriteSerializer(ModelSerializer):
     def to_representation(self, instance):
         return TitleReadSerializer(instance).data
 
+
 class TitleReadSerializer(ModelSerializer):
     """Сериализатор вывода произведений."""
 
     genre = GenreSerializer(read_only=True, many=True)
     category = CategorySerializer(read_only=True)
+    rating = IntegerField(read_only=True)
 
     class Meta:
         model = Title
