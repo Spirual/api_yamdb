@@ -1,6 +1,8 @@
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 
+from api_yamdb.settings import USERNAME_MAX_LENGHT, EMAIL_MAX_LENGHT, \
+    CONF_CODE_MAX_LENGHT
 from users.validators import validate_username, username_validator
 from rest_framework.fields import CurrentUserDefault, IntegerField
 from rest_framework.relations import SlugRelatedField
@@ -142,12 +144,12 @@ class SignupSerializer(Serializer):
     """Регистрация пользователя."""
 
     username = CharField(
-        max_length=150,
+        max_length=USERNAME_MAX_LENGHT,
         required=True,
         validators=[validate_username, username_validator],
     )
     email = EmailField(
-        max_length=254,
+        max_length=EMAIL_MAX_LENGHT,
         required=True,
     )
 
@@ -156,8 +158,8 @@ class GetTokenSerializer(Serializer):
     """Получаем username и confirmation code, отдаем токен"""
 
     username = CharField(
-        max_length=150,
+        max_length=USERNAME_MAX_LENGHT,
         required=True,
         validators=[validate_username, username_validator],
     )
-    confirmation_code = CharField(max_length=32)
+    confirmation_code = CharField(max_length=CONF_CODE_MAX_LENGHT)

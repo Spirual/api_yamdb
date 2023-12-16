@@ -3,7 +3,7 @@ from django.contrib.auth.tokens import default_token_generator
 from django.db.models import Avg
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import filters, status, permissions
+from rest_framework import filters, status
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
@@ -11,10 +11,6 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from rest_framework_simplejwt.tokens import AccessToken
-from rest_framework.exceptions import ValidationError
-from django.conf import settings
-
-from django.core.mail import send_mail
 
 from .serializers import SignupSerializer, GetTokenSerializer
 from users.utils import send_confirmation_code_to_email

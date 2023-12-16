@@ -2,13 +2,20 @@ from django.contrib.auth import get_user_model
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
+from api_yamdb.settings import NAME_MAX_LENGHT, SCORE_MIN_LIMIT_VALUE, \
+    SCORE_MAX_LIMIT_VALUE
 from .validators import validate_year
+
+
 
 User = get_user_model()
 
 
 class Category(models.Model):
-    name = models.CharField('Название категории', max_length=256)
+    name = models.CharField(
+        'Название категории',
+        max_length=NAME_MAX_LENGHT,
+    )
     slug = models.SlugField(
         'Идентификатор',
         unique=True,
@@ -27,7 +34,10 @@ class Category(models.Model):
 
 
 class Genre(models.Model):
-    name = models.CharField('Название жанра', max_length=256)
+    name = models.CharField(
+        'Название жанра',
+        max_length=NAME_MAX_LENGHT,
+    )
     slug = models.SlugField(
         'Идентификатор',
         unique=True,
@@ -46,7 +56,10 @@ class Genre(models.Model):
 
 
 class Title(models.Model):
-    name = models.CharField('Название произведения', max_length=256)
+    name = models.CharField(
+        'Название произведения',
+        max_length=NAME_MAX_LENGHT,
+    )
     year = models.SmallIntegerField(
         'Год выпуска',
         validators=[validate_year],
@@ -90,12 +103,12 @@ class Review(models.Model):
         verbose_name='Оценка произведению',
         validators=[
             MaxValueValidator(
-                limit_value=10,
-                message='Оценка не может превышать 10.',
+                limit_value=SCORE_MAX_LIMIT_VALUE,
+                message=f'Оценка не может превышать {SCORE_MAX_LIMIT_VALUE}.',
             ),
             MinValueValidator(
-                limit_value=1,
-                message='Оценка не может быть меньше 1.',
+                limit_value=SCORE_MIN_LIMIT_VALUE,
+                message=f'Оценка не может быть меньше {SCORE_MIN_LIMIT_VALUE}.',
             ),
         ],
     )
