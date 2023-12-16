@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.db.models import Avg
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, status
@@ -11,8 +12,7 @@ from rest_framework.viewsets import ModelViewSet
 from reviews.models import (
     Category,
     Genre,
-    Title,
-    Review,
+    Title, Review,
 )
 from .filters import TitleFilter
 from .mixins import CreateDestiyListModelMixin
@@ -36,8 +36,6 @@ APPLY_METHODS = (
         'post',
         'patch',
         'delete',
-        'head',
-        'options',
     )
 
 
@@ -69,7 +67,9 @@ class TitleViewSet(ModelViewSet):
     """Вывод произведений."""
 
     permission_classes = (IsAdminOrReadOnly,)
-    queryset = Title.objects.all()
+    queryset = Title.objects.annotate(
+        rating=Avg('reviews__score')
+    ).all()
     pagination_class = LimitOffsetPagination
     filter_backends = (DjangoFilterBackend,)
     filterset_class = TitleFilter
@@ -97,8 +97,6 @@ class ReviewViewSet(ModelViewSet):
     def perform_create(self, serializer):
         title = self.get_title()
         serializer.save(author=self.request.user, title=title)
-        title.update_rating()
-
 
 class CommentViewSet(ModelViewSet):
     """Вывод комментариев."""
@@ -107,12 +105,11 @@ class CommentViewSet(ModelViewSet):
     permission_classes = (IsAuthenticatedOrReadOnly,)
     http_method_names = APPLY_METHODS
 
-    def get_title(self):
-        return get_object_or_404(Title, id=self.kwargs.get('title_id'))
-
     def get_review(self):
         return get_object_or_404(
-            self.get_title().reviews, id=self.kwargs.get('review_id')
+            Review,
+            title_id=self.kwargs.get('title_id'),
+            id=self.kwargs.get('review_id'),
         )
 
     def get_queryset(self):
