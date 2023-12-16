@@ -1,7 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
-from api_yamdb.settings import USERNAME_MAX_LENGHT, ROLE_MAX_LENGHT
+from api_yamdb import settings
 from .validators import validate_username, username_validator
 
 
@@ -22,7 +22,7 @@ class CustomUser(AbstractUser):
 
     username = models.CharField(
         verbose_name='Пользователь',
-        max_length=USERNAME_MAX_LENGHT,
+        max_length=settings.USERNAME_MAX_LENGHT,
         unique=True,
         help_text='Имя пользователя',
         validators=[validate_username, username_validator],
@@ -31,7 +31,7 @@ class CustomUser(AbstractUser):
     bio = models.TextField(verbose_name='Биография', blank=True)
     role = models.CharField(
         verbose_name='Роль',
-        max_length=ROLE_MAX_LENGHT,
+        max_length=settings.ROLE_MAX_LENGHT,
         choices=UserRole.choices,
         default=UserRole.USER,
     )

@@ -92,11 +92,11 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# Подключаем бэкенд filebased.EmailBackend:
+
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
-# Указываем директорию, в которую будут сохраняться файлы писем:
+
 EMAIL_FILE_PATH = BASE_DIR / 'sent_emails'
-# Указываем почту, с которой отправляются письма:
+
 EMAIL_HOST_USER = 'no-reply@practicum.ru'
 
 LANGUAGE_CODE = 'ru-RU'
@@ -113,11 +113,11 @@ STATIC_URL = '/static/'
 
 STATICFILES_DIRS = ((BASE_DIR / 'static/'),)
 
-# Константы для проекта
+
 NAME_MAX_LENGHT = 256
 SCORE_MIN_LIMIT_VALUE = 1
 SCORE_MAX_LIMIT_VALUE = 10
 USERNAME_MAX_LENGHT = 150
 EMAIL_MAX_LENGHT = 254
 ROLE_MAX_LENGHT = 20
-CONF_CODE_MAX_LENGHT = 32
+

@@ -124,13 +124,10 @@ class UserViewSet(ModelViewSet):
     search_fields = ('username',)
     lookup_field = 'username'
 
-    # добавляет маршрут users/me к UserViewSet
+
     @action(
-        # не будет использоваться pk в url
         detail=False,
-        # доступные методы для этого url
         methods=('get', 'patch'),
-        # пользователь должен быть авторизован
         permission_classes=(IsAuthenticated,),
     )
     def me(self, request):
@@ -152,32 +149,24 @@ class SignupView(APIView):
     """
 
     def post(self, request):
-        # отправляем данные в сериализатор
         serializer = SignupSerializer(data=request.data)
-
-        # проверяем, что полученные поля корректны
         serializer.is_valid(raise_exception=True)
-
-        # данные из запроса
         email = serializer.data['email']
         username = serializer.data['username']
-
-        # извлекаем пользователя по username и email из БД
         user_by_username = User.objects.filter(username=username).first()
         user_by_email = User.objects.filter(email=email).first()
 
-        # если пользователь с юзернейм или почто из запросу уже есть в бд
         if user_by_username or user_by_email:
-            # если пользователи разные, возвращаем 400
+            errors = {}
             if user_by_username != user_by_email:
-                return Response(
-                    serializer.errors, status=status.HTTP_400_BAD_REQUEST
-                )
-            # иначе, если пользователи сопадают, отправляем код подтверждения
-            send_confirmation_code_to_email(
-                user_by_username.email, user_by_username
-            )
-        # иначе, если пользователя в базе нет, создаем его и отправляем письмо
+                if user_by_email:
+                    errors['email'] = [
+                        'Пользователь с таким email уже существует.']
+                if user_by_username:
+                    errors['username'] = [
+                        'Пользователь с таким username уже существует.']
+                return Response(errors, status=status.HTTP_400_BAD_REQUEST)
+
         user, _ = User.objects.get_or_create(username=username, email=email)
         send_confirmation_code_to_email(user.email, user)
 

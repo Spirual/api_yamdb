@@ -10,11 +10,7 @@ from rest_framework.serializers import (
     ValidationError,
 )
 
-from api_yamdb.settings import (
-    USERNAME_MAX_LENGHT,
-    EMAIL_MAX_LENGHT,
-    CONF_CODE_MAX_LENGHT,
-)
+from api_yamdb import settings
 from reviews.models import (
     Category,
     Genre,
@@ -62,9 +58,6 @@ class TitleWriteSerializer(ModelSerializer):
     class Meta:
         model = Title
         fields = ('id', 'name', 'description', 'year', 'category', 'genre')
-
-    def to_representation(self, instance):
-        return TitleReadSerializer(instance).data
 
     def to_representation(self, instance):
         return TitleReadSerializer(instance).data
@@ -150,12 +143,12 @@ class SignupSerializer(Serializer):
     """Регистрация пользователя."""
 
     username = CharField(
-        max_length=USERNAME_MAX_LENGHT,
+        max_length=settings.USERNAME_MAX_LENGHT,
         required=True,
         validators=[validate_username, username_validator],
     )
     email = EmailField(
-        max_length=EMAIL_MAX_LENGHT,
+        max_length=settings.EMAIL_MAX_LENGHT,
         required=True,
     )
 
@@ -164,8 +157,8 @@ class GetTokenSerializer(Serializer):
     """Получаем username и confirmation code, отдаем токен"""
 
     username = CharField(
-        max_length=USERNAME_MAX_LENGHT,
+        max_length=settings.USERNAME_MAX_LENGHT,
         required=True,
         validators=[validate_username, username_validator],
     )
-    confirmation_code = CharField(max_length=CONF_CODE_MAX_LENGHT)
+    confirmation_code = CharField()
