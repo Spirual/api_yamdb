@@ -1,5 +1,3 @@
-import datetime
-
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers
@@ -54,13 +52,6 @@ class TitleWriteSerializer(ModelSerializer):
         model = Title
         fields = ('id', 'name', 'description', 'year', 'category', 'genre')
 
-    def validate_year(self, value):
-        if value > datetime.date.today().year:
-            raise serializers.ValidationError(
-                'Произведение не может быть из будущего!'
-            )
-        return value
-
     def to_representation(self, instance):
         return TitleReadSerializer(instance).data
 
@@ -70,7 +61,7 @@ class TitleReadSerializer(ModelSerializer):
 
     genre = GenreSerializer(read_only=True, many=True)
     category = CategorySerializer(read_only=True)
-    rating = IntegerField(read_only=True)
+    rating = IntegerField(read_only=True, default=None)
 
     class Meta:
         model = Title

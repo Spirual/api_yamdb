@@ -1,5 +1,8 @@
-from rest_framework import mixins
+from rest_framework import mixins, filters
 from rest_framework.viewsets import GenericViewSet
+from rest_framework.pagination import LimitOffsetPagination
+
+from .permissions import IsAdminOrReadOnly
 
 
 class CreateDestiyListModelMixin(
@@ -10,4 +13,8 @@ class CreateDestiyListModelMixin(
 ):
     """Миксин только: создаетудаляет объект, возвращает список."""
 
-    pass
+    permission_classes = (IsAdminOrReadOnly,)
+    pagination_class = LimitOffsetPagination
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('name',)
+    lookup_field = 'slug'
