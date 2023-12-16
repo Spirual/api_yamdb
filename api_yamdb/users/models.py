@@ -1,30 +1,37 @@
 from django.contrib.auth.models import AbstractUser
+from .validators import validate_username, username_validator
 from django.db import models
 
-from .enums import UserRole
+
+class UserRole(models.TextChoices):
+    ADMIN = 'admin'
+    MODERATOR = 'moderator'
+    USER = 'user'
 
 
 class CustomUser(AbstractUser):
     """Переопределяем модель User.
 
-    Добавили поля role, bio, confirmation_code,
+    Добавили поля role, bio,
     переопределили поля username и email.
     Остальные поля наследуем от класса AbstractUser как есть,
     так как они удовлетворяют требованиям.
     """
 
-    email = models.EmailField(
-        verbose_name='E-mail', max_length=254, unique=True
+    username = models.CharField(
+        verbose_name='Пользователь',
+        max_length=150,
+        unique=True,
+        help_text='Имя пользователя',
+        validators=[validate_username, username_validator],
     )
+    email = models.EmailField(verbose_name='E-mail', unique=True)
     bio = models.TextField(verbose_name='Биография', blank=True)
     role = models.CharField(
         verbose_name='Роль',
         max_length=20,
-        choices=UserRole.choices(),
-        default=UserRole.USER.value[0],
-    )
-    confirmation_code = models.CharField(
-        verbose_name='Код подтверждения', max_length=32, blank=True
+        choices=UserRole.choices,
+        default=UserRole.USER,
     )
 
     class Meta:
@@ -34,18 +41,16 @@ class CustomUser(AbstractUser):
     @property
     def is_admin(self):
         return (
-            self.role == UserRole.ADMIN.value[0]
-            or self.is_staff
-            or self.is_superuser
+            self.role == UserRole.ADMIN or self.is_staff or self.is_superuser
         )
 
     @property
     def is_moderator(self):
-        return self.role == UserRole.MODERATOR.value[0]
+        return self.role == UserRole.MODERATOR
 
     @property
     def is_user(self):
-        return self.role == UserRole.USER.value[0]
+        return self.role == UserRole.USER
 
     def __str__(self):
         return self.username
