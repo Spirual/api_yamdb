@@ -1,12 +1,20 @@
-import datetime
-
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
-from rest_framework import serializers
-from rest_framework.fields import CurrentUserDefault
+from rest_framework.fields import CurrentUserDefault, IntegerField
 from rest_framework.relations import SlugRelatedField
-from rest_framework.serializers import ModelSerializer
+from rest_framework.serializers import (
+    ModelSerializer,
+    Serializer,
+    CharField,
+    EmailField,
+    ValidationError,
+)
 
+from api_yamdb.settings import (
+    USERNAME_MAX_LENGHT,
+    EMAIL_MAX_LENGHT,
+    CONF_CODE_MAX_LENGHT,
+)
 from reviews.models import (
     Category,
     Genre,
@@ -14,6 +22,7 @@ from reviews.models import (
     Review,
     Comment,
 )
+from users.validators import validate_username, username_validator
 
 User = get_user_model()
 
@@ -43,10 +52,10 @@ class GenreSerializer(ModelSerializer):
 class TitleWriteSerializer(ModelSerializer):
     """Сериализатор создания и редактирования произведения."""
 
-    genre = serializers.SlugRelatedField(
+    genre = SlugRelatedField(
         many=True, slug_field='slug', queryset=Genre.objects.all()
     )
-    category = serializers.SlugRelatedField(
+    category = SlugRelatedField(
         slug_field='slug', queryset=Category.objects.all()
     )
 
@@ -54,12 +63,8 @@ class TitleWriteSerializer(ModelSerializer):
         model = Title
         fields = ('id', 'name', 'description', 'year', 'category', 'genre')
 
-    def validate_year(self, value):
-        if value > datetime.date.today().year:
-            raise serializers.ValidationError(
-                'Произведение не может быть из будущего!'
-            )
-        return value
+    def to_representation(self, instance):
+        return TitleReadSerializer(instance).data
 
     def to_representation(self, instance):
         return TitleReadSerializer(instance).data
@@ -70,6 +75,7 @@ class TitleReadSerializer(ModelSerializer):
 
     genre = GenreSerializer(read_only=True, many=True)
     category = CategorySerializer(read_only=True)
+    rating = IntegerField(read_only=True, default=None)
 
     class Meta:
         model = Title
@@ -97,22 +103,15 @@ class ReviewSerializer(ModelSerializer):
         fields = ('id', 'text', 'author', 'score', 'pub_date')
         model = Review
 
-    def validate_score(self, value):
-        if not 1 <= value <= 10:
-            raise serializers.ValidationError('Оценка должна быть от 1 до 10!')
-        return value
-
     def validate(self, data):
-        title_id = self.context['view'].kwargs.get('title_id')
         request = self.context['request']
-        title = get_object_or_404(Title, id=title_id)
         if request.method == 'POST':
+            title_id = self.context['view'].kwargs.get('title_id')
+            title = get_object_or_404(Title, id=title_id)
             if Review.objects.filter(
                 author=request.user, title=title
             ).exists():
-                raise serializers.ValidationError(
-                    'Можно оставить только один отзыв!'
-                )
+                raise ValidationError('Можно оставить только один отзыв!')
         return data
 
 
@@ -144,4 +143,29 @@ class UserSerializer(ModelSerializer):
 class UsersMeSerializer(UserSerializer):
     """Вывод данных по запросу PATCH users/me/."""
 
-    role = serializers.CharField(read_only=True)
+    role = CharField(read_only=True)
+
+
+class SignupSerializer(Serializer):
+    """Регистрация пользователя."""
+
+    username = CharField(
+        max_length=USERNAME_MAX_LENGHT,
+        required=True,
+        validators=[validate_username, username_validator],
+    )
+    email = EmailField(
+        max_length=EMAIL_MAX_LENGHT,
+        required=True,
+    )
+
+
+class GetTokenSerializer(Serializer):
+    """Получаем username и confirmation code, отдаем токен"""
+
+    username = CharField(
+        max_length=USERNAME_MAX_LENGHT,
+        required=True,
+        validators=[validate_username, username_validator],
+    )
+    confirmation_code = CharField(max_length=CONF_CODE_MAX_LENGHT)
