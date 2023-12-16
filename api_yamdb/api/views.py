@@ -124,7 +124,6 @@ class UserViewSet(ModelViewSet):
     search_fields = ('username',)
     lookup_field = 'username'
 
-
     @action(
         detail=False,
         methods=('get', 'patch'),
