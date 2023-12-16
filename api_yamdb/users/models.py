@@ -1,8 +1,8 @@
 from django.contrib.auth.models import AbstractUser
+from django.db import models
 
 from api_yamdb.settings import USERNAME_MAX_LENGHT, ROLE_MAX_LENGHT
 from .validators import validate_username, username_validator
-from django.db import models
 
 
 class UserRole(models.TextChoices):

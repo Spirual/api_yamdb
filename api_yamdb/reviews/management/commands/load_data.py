@@ -61,7 +61,6 @@ class Command(BaseCommand):
     help = 'Поместите файлы в директорию static/data/'
     directory_path = r'static/data/'
 
-
     def get_list_of_dicts(self, file_name: str) -> list[dict]:
         """Возвращает список словарей, по словарю на строку файла."""
         file = str(self.directory_path + file_name)
@@ -74,7 +73,7 @@ class Command(BaseCommand):
 
     def distributor(self, file_name: str, list_of_dicts: list[dict]) -> None:
         """Вызывает нажную функцию для создания экземпляра класса."""
-        model_name=mapping[file_name][0]
+        model_name = mapping[file_name][0]
         import_counter = 0
         for dict in list_of_dicts:
             mapping[file_name][1](model_name, dict)

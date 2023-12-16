@@ -4,16 +4,13 @@ from django.db.models import Avg
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, status
-from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.decorators import action
+from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from rest_framework_simplejwt.tokens import AccessToken
-
-from .serializers import SignupSerializer, GetTokenSerializer
-from users.utils import send_confirmation_code_to_email
 
 from reviews.models import (
     Category,
@@ -21,6 +18,7 @@ from reviews.models import (
     Title,
     Review,
 )
+from users.utils import send_confirmation_code_to_email
 from .filters import TitleFilter
 from .mixins import CreateDestiyListModelMixin
 from .permissions import IsAdminOrReadOnly, IsAdmin, IsAuthenticatedOrReadOnly
@@ -34,6 +32,7 @@ from .serializers import (
     UserSerializer,
     UsersMeSerializer,
 )
+from .serializers import SignupSerializer, GetTokenSerializer
 
 User = get_user_model()
 
@@ -48,7 +47,6 @@ APPLY_METHODS = (
 
 class CategoryViewSet(CreateDestiyListModelMixin):
     """Вывод категорий произведений."""
-
 
     queryset = Category.objects.all()
     serializer_class = CategorySerializer

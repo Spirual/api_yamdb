@@ -1,7 +1,6 @@
 from django.conf import settings
-
-from django.core.mail import send_mail
 from django.contrib.auth.tokens import default_token_generator
+from django.core.mail import send_mail
 
 
 def send_confirmation_code_to_email(email, user):
@@ -11,5 +10,5 @@ def send_confirmation_code_to_email(email, user):
         subject='Код подтверждения',
         message=f'Ваш код подтверждения: {confirmation_code}',
         from_email=settings.EMAIL_HOST_USER,
-        recipient_list=[email]
+        recipient_list=[email],
     )

@@ -2,11 +2,12 @@ from django.contrib.auth import get_user_model
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
-from api_yamdb.settings import NAME_MAX_LENGHT, SCORE_MIN_LIMIT_VALUE, \
-    SCORE_MAX_LIMIT_VALUE
+from api_yamdb.settings import (
+    NAME_MAX_LENGHT,
+    SCORE_MIN_LIMIT_VALUE,
+    SCORE_MAX_LIMIT_VALUE,
+)
 from .validators import validate_year
-
-
 
 User = get_user_model()
 
@@ -108,7 +109,10 @@ class Review(models.Model):
             ),
             MinValueValidator(
                 limit_value=SCORE_MIN_LIMIT_VALUE,
-                message=f'Оценка не может быть меньше {SCORE_MIN_LIMIT_VALUE}.',
+                message=(
+                    'Оценка не может быть меньше '
+                    f'{SCORE_MIN_LIMIT_VALUE}.',
+                )
             ),
         ],
     )

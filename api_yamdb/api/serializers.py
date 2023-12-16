@@ -1,9 +1,5 @@
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
-
-from api_yamdb.settings import USERNAME_MAX_LENGHT, EMAIL_MAX_LENGHT, \
-    CONF_CODE_MAX_LENGHT
-from users.validators import validate_username, username_validator
 from rest_framework.fields import CurrentUserDefault, IntegerField
 from rest_framework.relations import SlugRelatedField
 from rest_framework.serializers import (
@@ -13,6 +9,12 @@ from rest_framework.serializers import (
     EmailField,
     ValidationError,
 )
+
+from api_yamdb.settings import (
+    USERNAME_MAX_LENGHT,
+    EMAIL_MAX_LENGHT,
+    CONF_CODE_MAX_LENGHT,
+)
 from reviews.models import (
     Category,
     Genre,
@@ -20,6 +22,7 @@ from reviews.models import (
     Review,
     Comment,
 )
+from users.validators import validate_username, username_validator
 
 User = get_user_model()
 

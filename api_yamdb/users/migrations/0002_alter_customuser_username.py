@@ -2,11 +2,11 @@
 
 import django.contrib.auth.validators
 from django.db import migrations, models
+
 import users.validators
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('users', '0001_initial'),
     ]
@@ -15,6 +15,15 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='customuser',
             name='username',
-            field=models.CharField(help_text='Имя пользователя', max_length=150, unique=True, validators=[users.validators.validate_username, django.contrib.auth.validators.UnicodeUsernameValidator()], verbose_name='Username'),
+            field=models.CharField(
+                help_text='Имя пользователя',
+                max_length=150,
+                unique=True,
+                validators=[
+                    users.validators.validate_username,
+                    django.contrib.auth.validators.UnicodeUsernameValidator(),
+                ],
+                verbose_name='Username',
+            ),
         ),
     ]
