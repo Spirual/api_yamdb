@@ -13,6 +13,12 @@
 Пользователи могут оставлять комментарии к отзывам.
 Добавлять отзывы, комментарии и ставить оценки могут только аутентифицированные пользователи.
 
+## Авторы:
+
+- [Владимир Фатеев](https://github.com/Spirual/) TeamLead, разработка разделов Review/Comments, реализация системы рейтинга.
+- [Екатерина Карпова](https://github.com/karpovakatya/) Разработка системы авторазации, прав доступа и учета пользователей.
+- [Александр Лобачев](https://github.com/AlexandrLobachev/) Разработка разделов Categories/Genres/Title и загрузчика данных в БД.
+
 ## Стек:
 Django 3.2, Simple JWT, Python 3.11, DRF, SQLite
 
@@ -30,6 +36,9 @@ Django 3.2, Simple JWT, Python 3.11, DRF, SQLite
 
 ### Выполнить миграции:
 `python3 manage.py migrate`
+
+### При необходимости наполинить базу данных:
+`python3 manage.py load_data`
 
 ### Запустить проект:
 `python3 manage.py runserver`

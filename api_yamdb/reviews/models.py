@@ -1,9 +1,8 @@
-import datetime
-
 from django.contrib.auth import get_user_model
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
-from django.db.models import Avg
+
+from .validators import validate_year
 
 User = get_user_model()
 
@@ -48,14 +47,9 @@ class Genre(models.Model):
 
 class Title(models.Model):
     name = models.CharField('Название произведения', max_length=256)
-    year = models.PositiveSmallIntegerField(
+    year = models.SmallIntegerField(
         'Год выпуска',
-        validators=[
-            MaxValueValidator(
-                datetime.date.today().year,
-                message='Произведение не может быть из будущего!',
-            )
-        ],
+        validators=[validate_year],
     )
     description = models.TextField(
         'Описание',

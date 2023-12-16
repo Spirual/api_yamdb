@@ -1,12 +1,16 @@
-import datetime
-
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
-from rest_framework import serializers
+
+from users.validators import validate_username, username_validator
 from rest_framework.fields import CurrentUserDefault, IntegerField
 from rest_framework.relations import SlugRelatedField
-from rest_framework.serializers import ModelSerializer
-
+from rest_framework.serializers import (
+    ModelSerializer,
+    Serializer,
+    CharField,
+    EmailField,
+    ValidationError,
+)
 from reviews.models import (
     Category,
     Genre,
@@ -43,23 +47,16 @@ class GenreSerializer(ModelSerializer):
 class TitleWriteSerializer(ModelSerializer):
     """Сериализатор создания и редактирования произведения."""
 
-    genre = serializers.SlugRelatedField(
+    genre = SlugRelatedField(
         many=True, slug_field='slug', queryset=Genre.objects.all()
     )
-    category = serializers.SlugRelatedField(
+    category = SlugRelatedField(
         slug_field='slug', queryset=Category.objects.all()
     )
 
     class Meta:
         model = Title
         fields = ('id', 'name', 'description', 'year', 'category', 'genre')
-
-    def validate_year(self, value):
-        if value > datetime.date.today().year:
-            raise serializers.ValidationError(
-                'Произведение не может быть из будущего!'
-            )
-        return value
 
     def to_representation(self, instance):
         return TitleReadSerializer(instance).data
@@ -70,7 +67,7 @@ class TitleReadSerializer(ModelSerializer):
 
     genre = GenreSerializer(read_only=True, many=True)
     category = CategorySerializer(read_only=True)
-    rating = IntegerField(read_only=True)
+    rating = IntegerField(read_only=True, default=None)
 
     class Meta:
         model = Title
@@ -98,7 +95,6 @@ class ReviewSerializer(ModelSerializer):
         fields = ('id', 'text', 'author', 'score', 'pub_date')
         model = Review
 
-
     def validate(self, data):
         request = self.context['request']
         if request.method == 'POST':
@@ -107,9 +103,7 @@ class ReviewSerializer(ModelSerializer):
             if Review.objects.filter(
                 author=request.user, title=title
             ).exists():
-                raise serializers.ValidationError(
-                    'Можно оставить только один отзыв!'
-                )
+                raise ValidationError('Можно оставить только один отзыв!')
         return data
 
 
@@ -141,4 +135,29 @@ class UserSerializer(ModelSerializer):
 class UsersMeSerializer(UserSerializer):
     """Вывод данных по запросу PATCH users/me/."""
 
-    role = serializers.CharField(read_only=True)
+    role = CharField(read_only=True)
+
+
+class SignupSerializer(Serializer):
+    """Регистрация пользователя."""
+
+    username = CharField(
+        max_length=150,
+        required=True,
+        validators=[validate_username, username_validator],
+    )
+    email = EmailField(
+        max_length=254,
+        required=True,
+    )
+
+
+class GetTokenSerializer(Serializer):
+    """Получаем username и confirmation code, отдаем токен"""
+
+    username = CharField(
+        max_length=150,
+        required=True,
+        validators=[validate_username, username_validator],
+    )
+    confirmation_code = CharField(max_length=32)
