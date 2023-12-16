@@ -3,7 +3,7 @@ import datetime
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers
-from rest_framework.fields import CurrentUserDefault
+from rest_framework.fields import CurrentUserDefault, IntegerField
 from rest_framework.relations import SlugRelatedField
 from rest_framework.serializers import ModelSerializer
 
@@ -64,11 +64,13 @@ class TitleWriteSerializer(ModelSerializer):
     def to_representation(self, instance):
         return TitleReadSerializer(instance).data
 
+
 class TitleReadSerializer(ModelSerializer):
     """Сериализатор вывода произведений."""
 
     genre = GenreSerializer(read_only=True, many=True)
     category = CategorySerializer(read_only=True)
+    rating = IntegerField(read_only=True)
 
     class Meta:
         model = Title
@@ -96,16 +98,12 @@ class ReviewSerializer(ModelSerializer):
         fields = ('id', 'text', 'author', 'score', 'pub_date')
         model = Review
 
-    def validate_score(self, value):
-        if not 1 <= value <= 10:
-            raise serializers.ValidationError('Оценка должна быть от 1 до 10!')
-        return value
 
     def validate(self, data):
-        title_id = self.context['view'].kwargs.get('title_id')
         request = self.context['request']
-        title = get_object_or_404(Title, id=title_id)
         if request.method == 'POST':
+            title_id = self.context['view'].kwargs.get('title_id')
+            title = get_object_or_404(Title, id=title_id)
             if Review.objects.filter(
                 author=request.user, title=title
             ).exists():
